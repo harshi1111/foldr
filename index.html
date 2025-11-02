@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foldr - AI Project Structure Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2c0c0c 0%, #1a0a0a 100%);
+            height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            background: #1a0a0a;
+            border-radius: 16px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(206, 66, 73, 0.3);
+            border: 1px solid #ce4249;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6c0404 0%, #ce4249 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1%, transparent 20%);
+            animation: sparkle 8s infinite linear;
+        }
+
+        @keyframes sparkle {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.2rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .tagline {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.3);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background: #1a0a0a;
+        }
+
+        .input-section, .preview-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #fff;
+            font-size: 1.3rem;
+            text-shadow: 0 1px 3px rgba(206, 66, 73, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: #ce4249;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid #6c0404;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            background: #2c0c0c;
+            color: #fff;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #ce4249;
+            box-shadow: 0 0 20px rgba(206, 66, 73, 0.4);
+            background: #3c0c0c;
+        }
+
+        textarea::placeholder {
+            color: #888;
+        }
+
+        .preview-container {
+            flex: 1;
+            border: 2px solid #6c0404;
+            border-radius: 12px;
+            padding: 20px;
+            background: #2c0c0c;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-y: auto;
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #ce4249 0%, #b8383f 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(206, 66, 73, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #d8484f 0%, #ce4249 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(206, 66, 73, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+            animation: buttonPulse 0.3s ease;
+        }
+
+        @keyframes buttonPulse {
+            0% { box-shadow: 0 4px 15px rgba(206, 66, 73, 0.3); }
+            50% { box-shadow: 0 4px 25px rgba(206, 66, 73, 0.6); }
+            100% { box-shadow: 0 4px 15px rgba(206, 66, 73, 0.3); }
+        }
+
+        button:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .clear-btn {
+            background: linear-gradient(135deg, #90585f 0%, #7a4a50 100%);
+        }
+
+        .clear-btn:hover {
+            background: linear-gradient(135deg, #a0686f 0%, #8a5a60 100%);
+        }
+
+        /* File Tree Styling */
+        .file-tree {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .file-item {
+            padding: 4px 0;
+            color: #fff;
+            animation: fileCreate 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes fileCreate {
+            0% { transform: translateY(-5px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .folder {
+            color: #ce4249;
+            font-weight: bold;
+        }
+
+        .file {
+            color: #ccc;
+        }
+
+        .file-icon, .folder-icon {
+            font-size: 0.9rem;
+            width: 16px;
+            text-align: center;
+        }
+
+        .folder-icon {
+            color: #ce4249;
+        }
+
+        .file-icon {
+            color: #aaa;
+        }
+
+        /* Status message */
+        #folderPath {
+            margin-top: 10px;
+            color: #ccc;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Success overlay */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-content {
+            background: #1a0a0a;
+            border: 2px solid #ce4249;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(206, 66, 73, 0.3);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #ce4249;
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <i class="fas fa-folder-tree logo-icon"></i>
+                Foldr
+            </h1>
+            <p class="tagline">
+                <i class="fas fa-magic"></i>
+                Paste your AI project layout → Get local folders instantly
+            </p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2>
+                    <i class="fas fa-paste"></i>
+                    Paste Your Project Layout
+                </h2>
+                <textarea id="projectInput" placeholder="Paste your ChatGPT project structure here...
+
+Example:
+my-project/
+├── src/
+│   ├── components/
+│   │   ├── Header.js
+│   │   └── Footer.js
+│   ├── utils/
+│   └── index.js
+├── public/
+│   └── index.html
+└── package.json"></textarea>
+                <div class="controls">
+                    <button id="parseBtn">
+                        <i class="fas fa-play-circle"></i>
+                        Generate Preview
+                    </button>
+                    <button id="clearBtn" class="clear-btn">
+                        <i class="fas fa-broom"></i>
+                        Clear
+                    </button>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <h2>
+                    <i class="fas fa-folder-open"></i>
+                    File Tree Preview
+                </h2>
+                <div id="preview" class="preview-container">
+                    <p style="color: #666; font-style: italic;">Your file tree will appear here...</p>
+                </div>
+                <div class="controls">
+                    <button id="chooseFolderBtn">
+                        <i class="fas fa-folder-plus"></i>
+                        Choose Save Location
+                    </button>
+                    <button id="createBtn" disabled>
+                        <i class="fas fa-rocket"></i>
+                        Create Project
+                    </button>
+                </div>
+                <div id="folderPath">
+                    <i class="fas fa-info-circle"></i>
+                    No folder selected
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ONLY THIS LINE - All functionality is in renderer.js -->
+    <script src="renderer.js"></script>
+</body>
+</html>
